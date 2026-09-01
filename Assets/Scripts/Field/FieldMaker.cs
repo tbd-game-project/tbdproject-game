@@ -10,6 +10,7 @@ public class FieldMaker : MonoBehaviour
 
     [Header("Reference")]
     [SerializeField] private GameObject field;
+    [SerializeField] private FieldManager fieldManager;
 
     [Header("Field Setting")]
     [SerializeField] private Vector2Int fieldSize = new(10, 10);
@@ -34,6 +35,16 @@ public class FieldMaker : MonoBehaviour
     [ContextMenu("Generate Field")]
     public void GenerateField()
     {
+        if(fieldManager == null)
+        {
+            fieldManager = this.GetComponent<FieldManager>();
+            if(fieldManager == null)
+            {
+                Debug.LogError("FieldManagerを取得できませんでした。");
+                return;
+            }
+        }
+
         if(field == null || isGenerating)
         {
             return;
@@ -46,6 +57,9 @@ public class FieldMaker : MonoBehaviour
             CreateGenerateRoot();
             ClearField();
 
+            // FieldManagerにフィールドサイズを通知
+            fieldManager.BeginFieldSetup(fieldSize);
+
             for (int x = 0; x < fieldSize.x; x++)
             {
                 for (int y = 0; y < fieldSize.y; y++)
@@ -55,6 +69,18 @@ public class FieldMaker : MonoBehaviour
                     newField.name = $"Field_{x}_{y}";
                     newField.transform.localPosition = new Vector3(x * 1.0f * fieldSpacing, 0.0f, y * 1.0f * fieldSpacing);
                     newField.transform.localRotation = Quaternion.identity;
+
+                    // FieldManagerに登録
+                    FieldPiece fieldPiece = newField.GetComponent<FieldPiece>();
+                    if (fieldPiece != null)
+                    {
+                        fieldPiece.SetCoodinate(x, y);
+                        fieldManager.RegisterFieldPiece(new Vector2Int(x, y), fieldPiece);
+                    }
+                    else
+                    {
+                        Debug.LogError($"FieldPieceコンポーネントが見つかりません: {newField.name}");
+                    }
                 }
             }
         }
