@@ -1,0 +1,201 @@
+# ============================================================
+# Unity
+# ============================================================
+
+# Unity generated / local cache
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# Unity temporary files
+*.tmp
+*.pidb
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity crash reports
+sysinfo.txt
+mono_crash.*
+
+# Memory captures / recordings
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# ============================================================
+# Unity Asset / Meta
+# ============================================================
+
+# Do NOT ignore normal .meta files.
+# Unity asset metadata must be version controlled.
+
+# Ignore generated meta files only
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# ============================================================
+# Unity Editor / Package Manager
+# ============================================================
+
+# Unity Package Manager generated files
+/[Aa]ssets/AssetStoreTools*
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# Unity Visual Scripting generated data
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
+
+# ============================================================
+# Addressables
+# ============================================================
+
+# Addressables generated build data
+/ServerData/
+/[Aa]ssets/AddressableAssetsData/*/*.bin*
+/[Aa]ssets/Addressables_Temp*
+
+# Generated Addressables StreamingAssets
+/[Aa]ssets/StreamingAssets/aa*
+/[Aa]ssets/StreamingAssets/aa.meta
+
+# ============================================================
+# Unity Test Runner
+# ============================================================
+
+# Auto-generated test scenes
+[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+InitTestScene*.unity*
+
+# ============================================================
+# Build Artifacts
+# ============================================================
+
+# Common Unity build outputs
+*.apk
+*.aab
+*.app
+*.unitypackage
+
+# Build folders
+/[Bb]uild/
+/[Bb]uilds/
+
+# Custom build output
+/[Bb]in/
+/[Dd]ist/
+
+# Build reports
+/[Aa]ssets/BuildReports*
+
+# Crashlytics
+crashlytics-build.properties
+
+# ============================================================
+# IDE / Editor
+# ============================================================
+
+# Visual Studio
+.vs/
+
+# JetBrains Rider / IntelliJ
+.idea/
+*.DotSettings.user
+
+# Visual Studio Code
+.vscode/
+
+# Unity generated project files
+*.csproj
+*.unityproj
+*.sln
+*.slnx
+
+# User-specific IDE files
+*.suo
+*.user
+*.userprefs
+
+# Consulo
+.consulo/
+
+# Exported Visual Studio / C# project data
+ExportedObj/
+
+# ============================================================
+# .NET / Gradle
+# ============================================================
+
+# Gradle
+.gradle/
+
+# ============================================================
+# OS
+# ============================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ============================================================
+# Temporary / Backup Files
+# ============================================================
+
+*.bak
+*.backup
+*.orig
+*.orig.meta
+*.swp
+*.swo
+
+# ============================================================
+# Logs
+# ============================================================
+
+*.log
+
+# ============================================================
+# Local / Sensitive Configuration
+# ============================================================
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Local secrets / credentials
+*.keystore
+*.p12
+*.pem
+
+# ============================================================
+# External / Local Assets
+# ============================================================
+
+# Assets distributed outside Git (e.g. Google Drive)
+# Imported .unitypackage files should be placed under this directory.
+/[Aa]ssets/[Ll]ocalAssets/
+/[Aa]ssets/[Ll]ocalSpace/
+
+# ============================================================
+# Unity-specific temporary files
+# ============================================================
+
+.utmp/
