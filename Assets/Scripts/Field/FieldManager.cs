@@ -1,11 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class FieldManager : MonoBehaviour
 {
     private Vector2Int fieldSize = new(10, 10);
-    private List<FieldPiece> fieldPiece = new ();
+    private List<FieldPiece> fieldPiece = new();
+
+    private Vector2Int[] checkDirection = new Vector2Int[4]
+    {
+        new Vector2Int(1, 0), // 横方向
+        new Vector2Int(0, 1), // 縦方向
+        new Vector2Int(1, 1), // 斜め方向（右上）
+        new Vector2Int(1, -1) // 斜め方向（右下）
+    };
 
     // ５目生後判定用の配列、ゲーム中の盤面アクセス用
     private FieldPiece[,] fieldPieceArray;
@@ -42,6 +49,21 @@ public class FieldManager : MonoBehaviour
         FieldPiece ret = fieldPieceArray[coodinate.x, coodinate.y];
 
         return ret;
+    }
+
+    public bool CheckFiveLine(Vector2Int currentCoodinate)
+    {
+        if(!IsInsideField(currentCoodinate))
+        {
+            Debug.LogError($"[FieldManager] CheckFiveLine: 範囲外の指定です Coodinate:{currentCoodinate} / FieldSize:{fieldSize}");
+            return false;
+        }
+
+        foreach (Vector2Int num in checkDirection)
+        {
+
+        }
+        return true;
     }
 
     private bool IsInsideField(Vector2Int coodinate)

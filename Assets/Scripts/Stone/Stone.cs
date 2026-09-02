@@ -3,7 +3,12 @@ using UnityEngine;
 public class Stone : MonoBehaviour
 {
 
-    private Player owner;
+    public Player owner { get; private set; }
+
+    public void SetOwner(Player player)
+    {
+        owner = player;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

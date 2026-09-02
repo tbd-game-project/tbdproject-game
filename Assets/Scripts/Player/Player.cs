@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private string initializeStatekey = "idle";
 
     private PlayerState currentState;
+    public FieldPiece OnStandingPiece { get; private set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()

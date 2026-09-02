@@ -8,6 +8,17 @@ public class PlayerStatePlace : PlayerState
         base.EnterState(owner, input);
 
         // TO DO:İ’uó‘Ô‚É“ü‚éÛ‚Ìˆ—‚ğ’Ç‰Á
+        if(owner.OnStandingPiece == null)
+        {
+            owner.ChangeState("idle");
+            return;
+        }
+
+        Stone stone = new Stone();
+        stone.SetOwner(owner);
+
+        Instantiate(stone);
+        owner.OnStandingPiece.PutStone(stone);
     }
 
     public override void UpdateState()
