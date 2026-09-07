@@ -33,8 +33,13 @@ public class FieldPiece : MonoBehaviour
             return false;
         }
         putedStone = stone;
-        putedStone.transform.position = this.transform.position + new Vector3(0, putedStone.transform.localScale.y, 0);
+        putedStone.transform.position = this.transform.position + new Vector3(0, (this.transform.localScale.y * 0.5f) + putedStone.transform.localScale.y, 0);
         return true;
+    }
+
+    public bool CanPutStone()
+    {
+        return putedStone == null;
     }
 
     public void SetCoodinate(float x, float y)

@@ -69,6 +69,33 @@ public class Player : MonoBehaviour
     private void AnyStateTransition()
     {
         // どの状態からでも特定のイベントで遷移するトランジションはここに記述する
+        if(input.Place.Pressed)
+        {
+            ChangeState("place");
+        }
+    }
 
+    public bool TryGetFieldPieceBelow(float rayStartHeight, float rayDistance, LayerMask fieldLayer)
+    {
+        Vector3 origin = transform.position + Vector3.up * rayStartHeight;
+
+        FieldPiece fieldPiece= null;
+
+        if (Physics.Raycast(origin,Vector3.down,out RaycastHit hit, rayDistance, fieldLayer,QueryTriggerInteraction.Ignore))
+        {
+            fieldPiece = hit.collider.GetComponent<FieldPiece>();
+            if(fieldPiece != null)
+            {
+                OnStandingPiece = fieldPiece;
+
+                Debug.DrawLine(origin, hit.point, Color.red, 1f);
+                return true;
+            }
+        }
+
+        OnStandingPiece = null;
+
+        Debug.DrawLine(origin, origin + Vector3.down * rayDistance, Color.green, 1f);
+        return false;
     }
 }

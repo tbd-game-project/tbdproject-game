@@ -24,10 +24,10 @@ public class PlayerStateMove : PlayerState
     {
         base.FixedUpdateState();
 
-        var controller = owner.GetComponent<CharacterController>();
+        var rb = owner.GetComponent<Rigidbody>();
         var moveDirection = new Vector3(input.MoveValue.x, 0.0f, input.MoveValue.y);
 
-        controller.Move(moveDirection * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
     }
 
     public override void ExitState()
