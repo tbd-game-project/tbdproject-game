@@ -40,8 +40,13 @@ public class FieldMaker : MonoBehaviour
             fieldManager = this.GetComponent<FieldManager>();
             if(fieldManager == null)
             {
-                Debug.LogError("FieldManagerを取得できませんでした。");
-                return;
+                fieldManager = this.gameObject.AddComponent<FieldManager>();
+
+                if(fieldManager == null)
+                {
+                    Debug.LogError("FieldManagerコンポーネントを追加できませんでした。");
+                    return;
+                }
             }
         }
 
@@ -83,6 +88,7 @@ public class FieldMaker : MonoBehaviour
                     }
                 }
             }
+
         }
         finally
         {
