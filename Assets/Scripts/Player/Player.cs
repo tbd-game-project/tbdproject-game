@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private string initializeStatekey = "idle";
 
     private PlayerState currentState;
+    public FieldTile OnStandingPiece { get; private set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -68,6 +69,33 @@ public class Player : MonoBehaviour
     private void AnyStateTransition()
     {
         // どの状態からでも特定のイベントで遷移するトランジションはここに記述する
+        if(input.Place.Pressed)
+        {
+            ChangeState("place");
+        }
+    }
 
+    public bool TryGetFieldTileBelow(float rayStartHeight, float rayDistance, LayerMask fieldLayer)
+    {
+        Vector3 origin = transform.position + Vector3.up * rayStartHeight;
+
+        FieldTile FieldTile= null;
+
+        if (Physics.Raycast(origin,Vector3.down,out RaycastHit hit, rayDistance, fieldLayer,QueryTriggerInteraction.Ignore))
+        {
+            FieldTile = hit.collider.GetComponent<FieldTile>();
+            if(FieldTile != null)
+            {
+                OnStandingPiece = FieldTile;
+
+                Debug.DrawLine(origin, hit.point, Color.red, 1f);
+                return true;
+            }
+        }
+
+        OnStandingPiece = null;
+
+        Debug.DrawLine(origin, origin + Vector3.down * rayDistance, Color.green, 1f);
+        return false;
     }
 }
