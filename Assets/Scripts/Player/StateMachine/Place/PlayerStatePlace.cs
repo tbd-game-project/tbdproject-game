@@ -15,7 +15,7 @@ public class PlayerStatePlace : PlayerState
 
         Debug.Log("PlayerStatePlace: EnterState");
 
-        owner.TryGetFieldPieceBelow(rayPositionOffset, rayDistance, fieldLayer);
+        owner.TryGetFieldTileBelow(rayPositionOffset, rayDistance, fieldLayer);
 
         if (owner.OnStandingPiece == null)
         {

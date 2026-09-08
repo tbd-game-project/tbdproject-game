@@ -4,7 +4,7 @@ using UnityEngine;
 public class FieldManager : MonoBehaviour
 {
     private Vector2Int fieldSize = new(10, 10);
-    private List<FieldPiece> fieldPiece = new();
+    private List<FieldTile> FieldTile = new();
 
     private Vector2Int[] checkDirection = new Vector2Int[4]
     {
@@ -15,38 +15,38 @@ public class FieldManager : MonoBehaviour
     };
 
     // ５目生後判定用の配列、ゲーム中の盤面アクセス用
-    private FieldPiece[,] fieldPieceArray;
+    private FieldTile[,] FieldTileArray;
 
     public void BeginFieldSetup(Vector2Int size)
     {
         fieldSize = size;
-        fieldPiece.Clear();
+        FieldTile.Clear();
 
-        fieldPieceArray = new FieldPiece[fieldSize.x, fieldSize.y];
+        FieldTileArray = new FieldTile[fieldSize.x, fieldSize.y];
     }
 
-    public void RegisterFieldPiece(Vector2Int coodinate, FieldPiece piece)
+    public void RegisterFieldTile(Vector2Int coodinate, FieldTile piece)
     { 
         if(!IsInsideField(coodinate))
         {
-            Debug.LogError($"[FieldManager] RegisterFieldPiece: 範囲外の指定です Coodinate:{coodinate} / FieldSize:{fieldSize}");
+            Debug.LogError($"[FieldManager] RegisterFieldTile: 範囲外の指定です Coodinate:{coodinate} / FieldSize:{fieldSize}");
             return;
         }
-        fieldPiece.Add(piece);
-        fieldPieceArray[coodinate.x, coodinate.y] = piece;
+        FieldTile.Add(piece);
+        FieldTileArray[coodinate.x, coodinate.y] = piece;
 
         piece.SetCoodinate(coodinate.x, coodinate.y);
     }
 
-    public FieldPiece GetFieldPiece(Vector2Int coodinate)
+    public FieldTile GetFieldTile(Vector2Int coodinate)
     {
         if(!IsInsideField(coodinate))
         {
-            Debug.LogError($"[FieldManager] GetFieldPiece: 範囲外の指定です Coodinate:{coodinate} / FieldSize:{fieldSize}");
+            Debug.LogError($"[FieldManager] GetFieldTile: 範囲外の指定です Coodinate:{coodinate} / FieldSize:{fieldSize}");
             return null;
         }
 
-        FieldPiece ret = fieldPieceArray[coodinate.x, coodinate.y];
+        FieldTile ret = FieldTileArray[coodinate.x, coodinate.y];
 
         return ret;
     }

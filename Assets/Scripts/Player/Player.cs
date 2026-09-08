@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private string initializeStatekey = "idle";
 
     private PlayerState currentState;
-    public FieldPiece OnStandingPiece { get; private set; }
+    public FieldTile OnStandingPiece { get; private set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -75,18 +75,18 @@ public class Player : MonoBehaviour
         }
     }
 
-    public bool TryGetFieldPieceBelow(float rayStartHeight, float rayDistance, LayerMask fieldLayer)
+    public bool TryGetFieldTileBelow(float rayStartHeight, float rayDistance, LayerMask fieldLayer)
     {
         Vector3 origin = transform.position + Vector3.up * rayStartHeight;
 
-        FieldPiece fieldPiece= null;
+        FieldTile FieldTile= null;
 
         if (Physics.Raycast(origin,Vector3.down,out RaycastHit hit, rayDistance, fieldLayer,QueryTriggerInteraction.Ignore))
         {
-            fieldPiece = hit.collider.GetComponent<FieldPiece>();
-            if(fieldPiece != null)
+            FieldTile = hit.collider.GetComponent<FieldTile>();
+            if(FieldTile != null)
             {
-                OnStandingPiece = fieldPiece;
+                OnStandingPiece = FieldTile;
 
                 Debug.DrawLine(origin, hit.point, Color.red, 1f);
                 return true;

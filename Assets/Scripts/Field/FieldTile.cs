@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FieldPiece : MonoBehaviour
+public class FieldTile : MonoBehaviour
 {
     [Header("Material")]
     [SerializeField] private Material defaultMaterial;

@@ -76,15 +76,15 @@ public class FieldMaker : MonoBehaviour
                     newField.transform.localRotation = Quaternion.identity;
 
                     // FieldManagerに登録
-                    FieldPiece fieldPiece = newField.GetComponent<FieldPiece>();
-                    if (fieldPiece != null)
+                    FieldTile FieldTile = newField.GetComponent<FieldTile>();
+                    if (FieldTile != null)
                     {
-                        fieldPiece.SetCoodinate(x, y);
-                        fieldManager.RegisterFieldPiece(new Vector2Int(x, y), fieldPiece);
+                        FieldTile.SetCoodinate(x, y);
+                        fieldManager.RegisterFieldTile(new Vector2Int(x, y), FieldTile);
                     }
                     else
                     {
-                        Debug.LogError($"FieldPieceコンポーネントが見つかりません: {newField.name}");
+                        Debug.LogError($"FieldTileコンポーネントが見つかりません: {newField.name}");
                     }
                 }
             }
