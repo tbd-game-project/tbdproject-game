@@ -71,6 +71,18 @@ public class TurnManager : MonoBehaviour
     // Battle結果State
     private TurnResultState resultState;
 
+    private TurnRepositionState repositionState;
+
+    [Header("Reposition Settings")]
+    [Tooltip("Defend Playerがフィールドに戻る時間")]
+    [SerializeField] private float defendRepositionTime = 3.0f;
+
+    [Tooltip("Attack Playerがフィールドに戻る時間")]
+    [SerializeField] private float attackRepositionTime = 5.0f;
+
+    [Tooltip("何ターンごとにRepositionを行うか")]
+    [SerializeField] private int repositionTurnInterval = 10;
+
     private void Awake()
     {
         // Singleton重複防止
@@ -88,6 +100,7 @@ public class TurnManager : MonoBehaviour
         playingState = new TurnPlayingState();
         turnEndState = new TurnEndState();
         resultState = new TurnResultState();
+        repositionState = new TurnRepositionState();
     }
 
     private void Update()
@@ -129,6 +142,8 @@ public class TurnManager : MonoBehaviour
 
             Debug.Log("TurnManager : Player1 Registered");
 
+            player1.SetRepositionColor(Color.red);
+
             CheckBattleReady();
 
             return;
@@ -140,6 +155,8 @@ public class TurnManager : MonoBehaviour
             player2 = player;
 
             Debug.Log("TurnManager : Player2 Registered");
+
+            player2.SetRepositionColor(Color.blue);
 
             CheckBattleReady();
 
@@ -354,6 +371,10 @@ public class TurnManager : MonoBehaviour
             case TurnStateType.Result:
                 currentState = resultState;
                 break;
+                
+            case TurnStateType.Reposition:
+                currentState = repositionState;
+                break;
         }
 
         currentStateType = stateType;
@@ -429,6 +450,23 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    // Repositionが必要な場合はRepositionへ遷移する
+    public void ProceedNextTurn()
+    {
+        // Attack Player交代 + Turn数加算
+        NextTurn();
+
+        // Repositionを行うTurn
+        if (IsRepositionTurn())
+        {
+            ChangeState(TurnStateType.Reposition);
+            return;
+        }
+
+        // 通常のTurn開始
+        ChangeState(TurnStateType.TurnStart);
+    }
+
     // ========================================
     // Getter / Check
     // ========================================
@@ -445,10 +483,37 @@ public class TurnManager : MonoBehaviour
         return turnTimer;
     }
 
+    // Turnタイマーを指定時間に設定する
+    public void SetTurnTimer(float time)
+    {
+        turnTimer = time;
+    }
+
     // 現在のターン数を取得する
     public int GetTurnCount()
     {
         return turnCount;
+    }
+
+    public float GetDefendRepositionTime()
+    {
+        return defendRepositionTime;
+    }
+
+    public float GetAttackRepositionTime()
+    {
+        return attackRepositionTime;
+    }
+
+    // 現在のターンがRepositionを行うターンか確認する
+    public bool IsRepositionTurn()
+    {
+        if (repositionTurnInterval <= 0)
+        {
+            return false;
+        }
+
+        return (turnCount - 1) % repositionTurnInterval == 0;
     }
 
     // Battle中か
@@ -497,6 +562,20 @@ public class TurnManager : MonoBehaviour
         return currentAttackPlayer;
     }
 
+    // 現在Defend側のPlayerを取得する
+    public Player GetDefendPlayer()
+    {
+        if (currentAttackPlayer == player1)
+        {
+            return player2;
+        }
+        if (currentAttackPlayer == player2)
+        {
+            return player1;
+        }
+        return null;
+    }
+
     // Debug表示用Player名を取得する
     public string GetPlayerName(Player player)
     {
@@ -517,8 +596,21 @@ public class TurnManager : MonoBehaviour
 
     private void OnGUI()
     {
+        float timeLimit = 0.0f;
+
+        switch (currentStateType)
+        {
+            case TurnStateType.Playing:
+                timeLimit = turnTimeLimit;
+                break;
+
+            case TurnStateType.Reposition:
+                timeLimit = Mathf.Max(defendRepositionTime,attackRepositionTime);
+                break;
+        }
+
         GUI.Label(new Rect(10, 10, 300, 30), $"TURN : {turnCount}");
-        GUI.Label(new Rect(10, 40, 300, 30), $"TIME : {turnTimer:F1}");
+        GUI.Label(new Rect(10, 40, 300, 30), $"TIME : {turnTimer:F1} / {timeLimit:F1}");
         GUI.Label(new Rect(10, 70, 300, 30), $"ATTACK : {GetPlayerName(currentAttackPlayer)}");
         GUI.Label(new Rect(10, 100, 300, 30), $"STATE : {currentStateType}");
     }

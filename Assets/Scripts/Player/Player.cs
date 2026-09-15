@@ -7,6 +7,16 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerStateList stateList;
     [SerializeField] private string initializeStatekey = "idle";
 
+    //---------------------------------------------------------------
+    [Header("Reposition Visual")]
+    private GameObject normalMesh;
+    private GameObject repositionMesh;
+
+    private Renderer normalMeshRenderer;
+    private Renderer repositionMeshRenderer;
+
+    //---------------------------------------------------------------
+
     private PlayerState currentState;
     public FieldTile OnStandingPiece { get; private set; }
 
@@ -23,12 +33,56 @@ public class Player : MonoBehaviour
             }
         }
 
+        //---------------------------------------------------------------
+        // NormalMeshを取得
+        Transform normalMeshTransform = transform.Find("NormalMesh");
+
+        if (normalMeshTransform != null)
+        {
+            normalMesh = normalMeshTransform.gameObject;
+        }
+        else
+        {
+            Debug.LogError("NormalMesh is not found");
+            return;
+        }
+
+        // RepositionPointerを取得
+        Transform repositionMeshTransform = transform.Find("RepositionMesh");
+
+        if (repositionMeshTransform != null)
+        {
+            repositionMesh = repositionMeshTransform.gameObject;
+        }
+        else
+        {
+            Debug.LogError("RepositionPointer is not found");
+            return;
+        }
+
+        normalMeshRenderer = normalMesh.GetComponent<Renderer>();
+
+        repositionMeshRenderer = repositionMesh.GetComponent<Renderer>();
+
+        if (!normalMeshRenderer || !repositionMeshRenderer)
+        {
+            Debug.LogError("NormalMesh または RepositionMesh にRendererがありません。");
+
+            return;
+        }
+        //---------------------------------------------------------------
+
         // ステータスのコピーインスタンスを生成
         stateList.CreateRunTimeCopies();
     }
 
     void Start()
     {
+        //---------------------------------------------------------------
+        TurnManager.Instance.RegisterPlayer(this);
+        repositionMesh.SetActive(false);
+        //---------------------------------------------------------------
+
         ChangeState(initializeStatekey);
     }
 
@@ -69,7 +123,7 @@ public class Player : MonoBehaviour
     private void AnyStateTransition()
     {
         // どの状態からでも特定のイベントで遷移するトランジションはここに記述する
-        if(input.Place.Pressed)
+        if (input.Place.Pressed && TurnManager.Instance.IsAttackPlayer(this)) 
         {
             ChangeState("place");
         }
@@ -98,4 +152,36 @@ public class Player : MonoBehaviour
         Debug.DrawLine(origin, origin + Vector3.down * rayDistance, Color.green, 1f);
         return false;
     }
+
+
+    //---------------------------------------------------------------
+    public void StartReposition()
+    {
+        ChangeState("reposition");
+    }
+
+    public void EndReposition()
+    {
+        ChangeState("idle");
+    }
+
+    public void EnterRepositionVisual()
+    {
+        normalMesh.SetActive(false);
+        repositionMesh.SetActive(true);
+    }
+
+    public void ExitRepositionVisual()
+    {
+        repositionMesh.SetActive(false);
+        normalMesh.SetActive(true);
+    }
+
+    public void SetRepositionColor(Color color)
+    {
+        normalMeshRenderer.material.color = color;
+        repositionMeshRenderer.material.color = color;
+    }
+
+    //---------------------------------------------------------------
 }

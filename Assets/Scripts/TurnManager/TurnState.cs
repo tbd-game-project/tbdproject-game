@@ -5,7 +5,8 @@ public enum TurnStateType
     TurnStart,
     Playing,
     TurnEnd,
-    Result
+    Result,
+    Reposition
 }
 
 public abstract class TurnBaseState

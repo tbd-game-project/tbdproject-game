@@ -29,6 +29,11 @@ public class PlayerStatePlace : PlayerState
             stone.SetOwner(owner);
             owner.OnStandingPiece.PutStone(stone);
             owner.ChangeState("idle");
+
+            //---------------------------------------------------------------
+            TurnManager.Instance.ConsumeTurn(owner);
+            //---------------------------------------------------------------
+
             return;
         }
         else
