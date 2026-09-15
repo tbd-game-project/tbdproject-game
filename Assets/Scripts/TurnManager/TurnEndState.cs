@@ -10,29 +10,9 @@ public class TurnEndState : TurnBaseState
 
     public override void UpdateState(TurnManager manager)
     {
-        // ==============================
-        // Ÿ”s”»’è
-        // ==============================
 
-        // Ÿ•‰‚ªŒˆ‚Ü‚Á‚½
-        //if (/*Ÿ•‰”»’f*/)
-        //{
-        //    manager.EndBattle();
-        //
-        //    // Result State‚Ö
-        //    manager.ChangeState(TurnStateType.Result);
-        //
-        //    return;
-        //}
-
-
-        // ==============================
-        // ŸTurn€”õ
-        // ==============================
-        manager.NextTurn();
-
-        // ŸTurnŠJn
-        manager.ChangeState(TurnStateType.TurnStart);
+        // 5ˆÈŠO‚ÍŸ‚ÌTurn‚Ö
+        manager.ProceedNextTurn();
     }
 
 
