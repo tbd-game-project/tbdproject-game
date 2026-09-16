@@ -4,7 +4,7 @@ public class TurnResultState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-        Debug.Log("Turn Result State Enter");
+        //Debug.Log("Turn Result State Enter");
     }
 
 
