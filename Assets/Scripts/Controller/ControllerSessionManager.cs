@@ -127,7 +127,7 @@ public sealed class ControllerSessionManager : MonoBehaviour
         {
             Debug.LogWarning(
                 $"[ControllerSessionManager] " +
-                $"登録可能人数は{MaxPlayerCount}人までです。"
+                $"登録可能人数は、{MaxPlayerCount}人までです。"
             );
 
             return false;
