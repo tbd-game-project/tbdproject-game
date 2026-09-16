@@ -12,7 +12,7 @@ using UnityEngine;
 public class Stone : MonoBehaviour
 {
     // 既存の参照との互換性を保つため、名前は変更しない。
-    public Player owner { get; private set; }
+    public Player Owner { get; private set; }
 
     [Header("色の設定")]
 
@@ -105,7 +105,7 @@ public class Stone : MonoBehaviour
     /// </summary>
     public void SetOwner(Player player)
     {
-        owner = player;
+        Owner = player;
 
         // 以前の色変化を終了する。
         isTransitioning = false;
@@ -119,12 +119,12 @@ public class Stone : MonoBehaviour
 
         ApplyColor(neutralColor);
 
-        if (owner == null)
+        if (Owner == null)
         {
             return;
         }
 
-        if (!owner.TryGetComponent<PlayerStoneColor>(
+        if (!Owner.TryGetComponent<PlayerStoneColor>(
                 out var playerStoneColor))
         {
             Debug.LogWarning(

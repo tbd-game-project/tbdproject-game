@@ -4,7 +4,6 @@ public class TurnBattleStartState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-
     }
 
 

@@ -24,7 +24,7 @@ public class TurnRepositionState : TurnBaseState
 
         float totalTime = Mathf.Max(manager.GetDefendRepositionTime(),manager.GetAttackRepositionTime());
 
-        // RepositionŠJŽn‚©‚ç‚ÌŒo‰ßŽžŠÔ
+        // Repositionï¿½Jï¿½nï¿½ï¿½ï¿½ï¿½ÌŒoï¿½ßŽï¿½ï¿½ï¿½
         float elapsedTime = totalTime - manager.GetTurnTimer();
 
         if (!defendEntered && elapsedTime >= manager.GetDefendRepositionTime()) 

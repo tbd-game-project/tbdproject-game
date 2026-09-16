@@ -4,7 +4,7 @@ public class TurnStartState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-        // Turnƒ^ƒCƒ}[‰Šú‰»
+        // Turnï¿½^ï¿½Cï¿½}ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         manager.ResetTurnTimer();
     }
 

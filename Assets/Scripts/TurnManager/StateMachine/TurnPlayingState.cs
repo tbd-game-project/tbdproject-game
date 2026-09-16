@@ -10,10 +10,10 @@ public class TurnPlayingState : TurnBaseState
 
     public override void UpdateState(TurnManager manager)
     {
-        // TurnŠÔXV
+        // Turnï¿½ï¿½ï¿½ÔXï¿½V
         manager.UpdateTurnTimer();
 
-        // ŠÔØ‚ê
+        // ï¿½ï¿½ï¿½ÔØ‚ï¿½
         if (manager.GetTurnTimer() <= 0.0f)
         {
             manager.ChangeState(TurnStateType.TurnEnd);

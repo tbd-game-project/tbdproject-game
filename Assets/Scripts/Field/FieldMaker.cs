@@ -32,6 +32,40 @@ public class FieldMaker : MonoBehaviour
         QueueGenerateField();
     }
 
+    private void Start()
+    {
+        if(!Application.isPlaying)
+        {
+            return;
+        }
+
+        RegisterFieldManager();
+    }
+
+    public void  RegisterFieldManager()
+    {
+        if(fieldManager == null)
+        {
+            return;
+        }
+
+        if(fieldManager == null || generatedRoot == null)
+        {
+            return;
+        }
+
+        fieldManager.BeginFieldSetup(fieldSize);
+
+        FieldTile[] fieldTiles = generatedRoot.GetComponentsInChildren<FieldTile>();
+
+        foreach (FieldTile fieldTile in fieldTiles)
+        {
+            Vector2Int coordinate = fieldTile.GetCoordinate();
+            fieldManager.RegisterFieldTile(coordinate, fieldTile);
+        }
+
+    }
+
     [ContextMenu("Generate Field")]
     public void GenerateField()
     {

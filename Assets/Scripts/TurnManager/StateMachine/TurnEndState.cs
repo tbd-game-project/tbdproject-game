@@ -10,8 +10,47 @@ public class TurnEndState : TurnBaseState
 
     public override void UpdateState(TurnManager manager)
     {
+        //if (/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½f*/)
+        //{
+        //    manager.EndBattle();
+        //
+        //    // Result Stateï¿½ï¿½
+        //    manager.ChangeState(TurnStateType.Result);
+        //
+        //    return;
+        //}
 
-        // 5ˆÈŠO‚ÍŽŸ‚ÌTurn‚Ö
+
+        int matchCount = MatchStorage.Instance.GetMatchCount();
+        if (matchCount > 0)
+        {
+            MatchStorage.Instance.SortMatchData();
+        }
+        for(int i = 0; i < matchCount; i++)
+        {
+            MatchData matchData = MatchStorage.Instance.PopMatchData();
+
+            switch (matchData.Num)
+            {
+                case 5:
+                    // 5ï¿½Ìï¿½ï¿½ï¿½
+                    Debug.Log($"5ï¿½ï¿½ÌŒï¿½ï¿½o(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {matchData.Owner}): ï¿½Yï¿½ï¿½ï¿½Óï¿½[ ï¿½Nï¿½_:{matchData.Coordinate} / ï¿½ï¿½ï¿½ï¿½{matchData.Direction}]");
+                    break;
+
+                case 4:
+                    // 4ï¿½Ìï¿½ï¿½ï¿½
+                    Debug.Log($"4ï¿½ï¿½ÌŒï¿½ï¿½o(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {matchData.Owner}): ï¿½Yï¿½ï¿½ï¿½Óï¿½[ ï¿½Nï¿½_:{matchData.Coordinate} / ï¿½ï¿½ï¿½ï¿½{matchData.Direction}]");
+                    break;
+
+                case 3:
+                    // 3ï¿½Ìï¿½ï¿½ï¿½
+                    Debug.Log($"3ï¿½ï¿½ÌŒï¿½ï¿½o(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {matchData.Owner}): ï¿½Yï¿½ï¿½ï¿½Óï¿½[ ï¿½Nï¿½_:{matchData.Coordinate} / ï¿½ï¿½ï¿½ï¿½{matchData.Direction}]");
+                    break;
+            }
+        }
+        MatchStorage.Instance.ClearMatchData();
+
+        // 5ï¿½ÈŠOï¿½ÍŽï¿½ï¿½ï¿½Turnï¿½ï¿½
         manager.ProceedNextTurn();
     }
 

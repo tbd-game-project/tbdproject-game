@@ -13,8 +13,6 @@ public class PlayerStatePlace : PlayerState
     {
         base.EnterState(owner, input);
 
-        Debug.Log("PlayerStatePlace: EnterState");
-
         owner.TryGetFieldTileBelow(rayPositionOffset, rayDistance, fieldLayer);
 
         if (owner.OnStandingPiece == null)
