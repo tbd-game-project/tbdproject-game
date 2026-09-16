@@ -4,17 +4,17 @@ public class TurnEndState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-        //Debug.Log($"Turn End : {manager.GetPlayerName(manager.GetAttackPlayer())} ‚ÌAttackƒ^[ƒ“I—¹");
+        
     }
 
 
     public override void UpdateState(TurnManager manager)
     {
-        //if (/*Ÿ•‰”»’f*/)
+        //if (/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½f*/)
         //{
         //    manager.EndBattle();
         //
-        //    // Result State‚Ö
+        //    // Result Stateï¿½ï¿½
         //    manager.ChangeState(TurnStateType.Result);
         //
         //    return;
@@ -33,24 +33,24 @@ public class TurnEndState : TurnBaseState
             switch (matchData.Num)
             {
                 case 5:
-                    // 5‚Ìˆ—
-                    Debug.Log($"5—ñ‚ÌŒŸo(ŠÒ {matchData.Owner}): ŠY“–‰ÓŠ[ ‹N“_:{matchData.Coordinate} / •ûŒü{matchData.Direction}]");
+                    // 5ï¿½Ìï¿½ï¿½ï¿½
+                    Debug.Log($"5ï¿½ï¿½ÌŒï¿½ï¿½o(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {matchData.Owner}): ï¿½Yï¿½ï¿½ï¿½Óï¿½[ ï¿½Nï¿½_:{matchData.Coordinate} / ï¿½ï¿½ï¿½ï¿½{matchData.Direction}]");
                     break;
 
                 case 4:
-                    // 4‚Ìˆ—
-                    Debug.Log($"4—ñ‚ÌŒŸo(ŠÒ {matchData.Owner}): ŠY“–‰ÓŠ[ ‹N“_:{matchData.Coordinate} / •ûŒü{matchData.Direction}]");
+                    // 4ï¿½Ìï¿½ï¿½ï¿½
+                    Debug.Log($"4ï¿½ï¿½ÌŒï¿½ï¿½o(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {matchData.Owner}): ï¿½Yï¿½ï¿½ï¿½Óï¿½[ ï¿½Nï¿½_:{matchData.Coordinate} / ï¿½ï¿½ï¿½ï¿½{matchData.Direction}]");
                     break;
 
                 case 3:
-                    // 3‚Ìˆ—
-                    Debug.Log($"3—ñ‚ÌŒŸo(ŠÒ {matchData.Owner}): ŠY“–‰ÓŠ[ ‹N“_:{matchData.Coordinate} / •ûŒü{matchData.Direction}]");
+                    // 3ï¿½Ìï¿½ï¿½ï¿½
+                    Debug.Log($"3ï¿½ï¿½ÌŒï¿½ï¿½o(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {matchData.Owner}): ï¿½Yï¿½ï¿½ï¿½Óï¿½[ ï¿½Nï¿½_:{matchData.Coordinate} / ï¿½ï¿½ï¿½ï¿½{matchData.Direction}]");
                     break;
             }
         }
         MatchStorage.Instance.ClearMatchData();
 
-        // 5ˆÈŠO‚ÍŸ‚ÌTurn‚Ö
+        // 5ï¿½ÈŠOï¿½Íï¿½ï¿½ï¿½Turnï¿½ï¿½
         manager.ProceedNextTurn();
     }
 

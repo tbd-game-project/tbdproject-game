@@ -140,8 +140,6 @@ public class TurnManager : MonoBehaviour
         {
             player1 = player;
 
-            Debug.Log("TurnManager : Player1 Registered");
-
             player1.SetRepositionColor(Color.red);
 
             CheckBattleReady();
@@ -153,8 +151,6 @@ public class TurnManager : MonoBehaviour
         if (player2 == null)
         {
             player2 = player;
-
-            Debug.Log("TurnManager : Player2 Registered");
 
             player2.SetRepositionColor(Color.blue);
 
@@ -299,8 +295,6 @@ public class TurnManager : MonoBehaviour
                 : player2;
 
         hasFirstPlayer = true;
-
-        Debug.Log($"First Attack : {GetPlayerName(currentAttackPlayer)}");
     }
 
     // 外部から先攻Playerを指定するBattle開始前のみ使用可能

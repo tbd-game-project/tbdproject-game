@@ -29,7 +29,8 @@ public class PlayerStatePlace : PlayerState
             owner.ChangeState("idle");
 
             //---------------------------------------------------------------
-            TurnManager.Instance.ConsumeTurn(owner);
+            if(TurnManager.Instance != null)
+                TurnManager.Instance.ConsumeTurn(owner);
             //---------------------------------------------------------------
 
             return;

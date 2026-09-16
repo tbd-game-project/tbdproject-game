@@ -4,9 +4,7 @@ public class TurnStartState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-        //Debug.Log($"Turn Start : Ÿ‚ÌAttack’S“– = {manager.GetPlayerName(manager.GetAttackPlayer())}");
-
-        // Turnƒ^ƒCƒ}[‰Šú‰»
+        // Turnï¿½^ï¿½Cï¿½}ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         manager.ResetTurnTimer();
     }
 

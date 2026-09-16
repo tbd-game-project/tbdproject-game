@@ -1,16 +1,15 @@
 using UnityEngine;
 
-public class TurnResultState : TurnBaseState
+public class TurnBattleStartState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-        //Debug.Log("Turn Result State Enter");
     }
 
 
     public override void UpdateState(TurnManager manager)
     {
-
+        manager.ChangeState(TurnStateType.TurnStart);
     }
 
 
