@@ -4,7 +4,7 @@ public class TurnPlayingState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-        Debug.Log("Turn Playing State Enter");
+        
     }
 
 

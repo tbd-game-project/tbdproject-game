@@ -8,7 +8,6 @@ public class TurnRepositionState : TurnBaseState
 
     public override void Enter(TurnManager manager)
     {
-        Debug.Log("Turn Reposition State Enter");
 
         defendEntered = false;
         attackEntered = false;

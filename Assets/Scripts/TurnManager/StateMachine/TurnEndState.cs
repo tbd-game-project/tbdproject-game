@@ -4,7 +4,7 @@ public class TurnEndState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-        Debug.Log($"Turn End : {manager.GetPlayerName(manager.GetAttackPlayer())} ‚ÌAttackƒ^[ƒ“I—¹");
+        
     }
 
 

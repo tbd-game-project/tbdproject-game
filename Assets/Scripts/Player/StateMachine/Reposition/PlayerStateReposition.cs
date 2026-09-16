@@ -7,8 +7,6 @@ public class PlayerStateReposition : PlayerState
 
     public override void EnterState(Player owner, PlayerInputReader input)
     {
-        Debug.Log("PlayerStateReposition: EnterState");
-
         base.EnterState(owner, input);
 
         //アウト演出モデル切り替え

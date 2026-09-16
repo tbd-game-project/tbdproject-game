@@ -4,8 +4,6 @@ public class TurnStartState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-        Debug.Log($"Turn Start : 次のAttack担当 = {manager.GetPlayerName(manager.GetAttackPlayer())}");
-
         // Turnタイマー初期化
         manager.ResetTurnTimer();
     }
