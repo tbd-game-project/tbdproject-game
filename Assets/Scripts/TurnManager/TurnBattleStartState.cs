@@ -4,7 +4,7 @@ public class TurnBattleStartState : TurnBaseState
 {
     public override void Enter(TurnManager manager)
     {
-        Debug.Log("Turn BattleStart State Enter");
+        //Debug.Log("Turn BattleStart State Enter");
     }
 
 
