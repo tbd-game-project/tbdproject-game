@@ -122,6 +122,30 @@ public class Player : MonoBehaviour
 
     private void AnyStateTransition()
     {
+        // 命中情報が届いていたら、操作より優先して吹き飛ばされる状態へ入る。
+        if (TryGetComponent<SmashHitReceiver>(out var receiver) &&
+            receiver.HasPendingHit)
+        {
+            ChangeState("knockback");
+            return;
+        }
+
+        // 吹き飛ばされている間は、攻撃・配置入力を使わない。
+        if (currentState is PlayerStateSmashed)
+        {
+            return;
+        }
+
+        if (input.Attack.Pressed &&
+            TryGetComponent<SmashAttack>(out var skill))
+        {
+            // 攻撃が発動した場合は、同時に配置しない。
+            if (skill.TryUse())
+            {
+                return;
+            }
+        }
+
         // どの状態からでも特定のイベントで遷移するトランジションはここに記述する
         if (input.Place.Pressed && TurnManager.Instance.IsAttackPlayer(this)) 
         {
