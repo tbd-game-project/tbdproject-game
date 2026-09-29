@@ -16,6 +16,11 @@ public class PlayerStateReposition : PlayerState
     public override void UpdateState()
     {
         base.UpdateState();
+
+        if(input.Place.Pressed)
+        {
+            TurnManager.Instance.RequestEndReposition(owner);
+        }
     }
 
     public override void FixedUpdateState()
