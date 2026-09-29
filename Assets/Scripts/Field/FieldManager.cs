@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public struct MatchCount
@@ -152,5 +153,10 @@ public class FieldManager : MonoBehaviour
     private bool IsInsideField(Vector2Int coodinate)
     {
         return coodinate.x >= 0 && coodinate.x < fieldSize.x && coodinate.y >= 0 && coodinate.y < fieldSize.y;
+    }
+
+    public Vector3 GetCenter()
+    {
+        return new Vector3((fieldSize.x - 1) * 0.5f, 0.0f, (fieldSize.y - 1) * 0.5f);
     }
 }

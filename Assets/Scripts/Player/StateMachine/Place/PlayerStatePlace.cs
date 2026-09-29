@@ -26,6 +26,7 @@ public class PlayerStatePlace : PlayerState
             Stone stone = Instantiate(stonePrefab).GetComponent<Stone>();
             stone.SetOwner(owner);
             owner.OnStandingPiece.PutStone(stone);
+            FieldCamera.Instance.CameraShake(0.1f, 0.2f);
             owner.ChangeState("idle");
 
             //---------------------------------------------------------------
