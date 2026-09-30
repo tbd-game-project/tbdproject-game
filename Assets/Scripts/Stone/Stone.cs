@@ -198,4 +198,5 @@ public class Stone : MonoBehaviour
         propertyBlock.SetColor(colorPropertyId, color);
         meshRenderer.SetPropertyBlock(propertyBlock);
     }
+
 }

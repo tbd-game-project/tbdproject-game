@@ -159,4 +159,15 @@ public class FieldManager : MonoBehaviour
     {
         return new Vector3((fieldSize.x - 1) * 0.5f, 0.0f, (fieldSize.y - 1) * 0.5f);
     }
+
+    public void HighlightAllStoneColor()
+    {
+        foreach (FieldTile tile in FieldTile)
+        {
+            if (tile.PutedStone != null)
+            {
+                tile.PutedStone.RevealColor(tile.PutedStone.Owner.GetComponent<PlayerStoneColor>().StoneColor);
+            }
+        }
+    }
 }
