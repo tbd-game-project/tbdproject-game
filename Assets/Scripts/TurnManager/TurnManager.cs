@@ -74,11 +74,11 @@ public class TurnManager : MonoBehaviour
     private TurnRepositionState repositionState;
 
     [Header("Reposition Settings")]
-    [Tooltip("Defend Playerがフィールドに戻る時間")]
-    [SerializeField] private float defendRepositionTime = 3.0f;
+    [Tooltip("両PlayerがReadyにならなかった場合に、一人目が自動でRepositionを終了するまでの時間")]
+    [SerializeField] private float repositionTimeLimit = 10.0f;
 
-    [Tooltip("Attack Playerがフィールドに戻る時間")]
-    [SerializeField] private float attackRepositionTime = 5.0f;
+    [Tooltip("一人目がRepositionを終了してから、二人目が終了するまでの時間")]
+    [SerializeField] private float secondPlayerExitDelay = 2.0f;
 
     [Tooltip("何ターンごとにRepositionを行うか")]
     [SerializeField] private int repositionTurnInterval = 10;
@@ -140,8 +140,6 @@ public class TurnManager : MonoBehaviour
         {
             player1 = player;
 
-            Debug.Log("TurnManager : Player1 Registered");
-
             player1.SetRepositionColor(Color.red);
 
             CheckBattleReady();
@@ -153,8 +151,6 @@ public class TurnManager : MonoBehaviour
         if (player2 == null)
         {
             player2 = player;
-
-            Debug.Log("TurnManager : Player2 Registered");
 
             player2.SetRepositionColor(Color.blue);
 
@@ -299,8 +295,6 @@ public class TurnManager : MonoBehaviour
                 : player2;
 
         hasFirstPlayer = true;
-
-        Debug.Log($"First Attack : {GetPlayerName(currentAttackPlayer)}");
     }
 
     // 外部から先攻Playerを指定するBattle開始前のみ使用可能
@@ -467,6 +461,16 @@ public class TurnManager : MonoBehaviour
         ChangeState(TurnStateType.TurnStart);
     }
 
+    public void RequestEndReposition(Player player)
+    {
+        if (currentStateType != TurnStateType.Reposition)
+        {
+            return;
+        }
+
+        repositionState.RequestEnd(player, this);
+    }
+
     // ========================================
     // Getter / Check
     // ========================================
@@ -495,14 +499,14 @@ public class TurnManager : MonoBehaviour
         return turnCount;
     }
 
-    public float GetDefendRepositionTime()
+    public float GetRepositionTimeLimit()
     {
-        return defendRepositionTime;
+        return repositionTimeLimit;
     }
 
-    public float GetAttackRepositionTime()
+    public float GetSecondPlayerExitDelay()
     {
-        return attackRepositionTime;
+        return secondPlayerExitDelay;
     }
 
     // 現在のターンがRepositionを行うターンか確認する
@@ -605,7 +609,7 @@ public class TurnManager : MonoBehaviour
                 break;
 
             case TurnStateType.Reposition:
-                timeLimit = Mathf.Max(defendRepositionTime,attackRepositionTime);
+                timeLimit = repositionTimeLimit;
                 break;
         }
 

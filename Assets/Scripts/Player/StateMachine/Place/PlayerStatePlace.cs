@@ -13,8 +13,6 @@ public class PlayerStatePlace : PlayerState
     {
         base.EnterState(owner, input);
 
-        Debug.Log("PlayerStatePlace: EnterState");
-
         owner.TryGetFieldTileBelow(rayPositionOffset, rayDistance, fieldLayer);
 
         if (owner.OnStandingPiece == null)
@@ -28,10 +26,12 @@ public class PlayerStatePlace : PlayerState
             Stone stone = Instantiate(stonePrefab).GetComponent<Stone>();
             stone.SetOwner(owner);
             owner.OnStandingPiece.PutStone(stone);
+            FieldCamera.Instance.CameraShake(0.1f, 0.2f);
             owner.ChangeState("idle");
 
             //---------------------------------------------------------------
-            TurnManager.Instance.ConsumeTurn(owner);
+            if(TurnManager.Instance != null)
+                TurnManager.Instance.ConsumeTurn(owner);
             //---------------------------------------------------------------
 
             return;

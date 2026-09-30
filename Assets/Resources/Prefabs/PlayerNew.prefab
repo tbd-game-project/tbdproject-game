@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4055656856168013954}
   - component: {fileID: 3311638036992274654}
   - component: {fileID: 5701463908681892838}
+  - component: {fileID: 9117092643220765789}
   m_Layer: 0
   m_Name: PlayerNew
   m_TagString: Player
@@ -155,6 +156,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &9117092643220765789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954254413486911163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3d2faa722ebf2146aacedbb5f1b383e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStoneColor
+  stoneColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1001 &4002585547676254766
 PrefabInstance:
   m_ObjectHideFlags: 0
