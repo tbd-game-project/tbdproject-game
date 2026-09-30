@@ -10,20 +10,9 @@ public class FieldTile : MonoBehaviour
     [SerializeField]private Vector2Int coordinate;
     public Stone PutedStone {get; private set; } = null;
 
-    private void OnCollisionEnter(Collision collision)
+    private void Start()
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            this.gameObject.GetComponent<MeshRenderer>().material = highlightMaterial;
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            this.gameObject.GetComponent<MeshRenderer>().material = defaultMaterial;
-        }
+        this.gameObject.GetComponent<MeshRenderer>().material = defaultMaterial;
     }
 
     public bool PutStone(Stone stone)
@@ -71,5 +60,29 @@ public class FieldTile : MonoBehaviour
     public Vector2Int GetCoordinate()
     {
         return coordinate;
+    }
+
+    public void ShowColor()
+    {
+        if(PutedStone != null)
+        {
+            PutedStone.RevealColor(PutedStone.Owner.GetComponent<PlayerStoneColor>().StoneColor);
+        }
+    }
+
+    public void LightUpTile()
+    {
+        if (highlightMaterial != null)
+        {
+            this.gameObject.GetComponent<MeshRenderer>().material = highlightMaterial;
+        }
+    }
+
+    public void ResetTileColor()
+    {
+        if (defaultMaterial != null)
+        {
+            this.gameObject.GetComponent<MeshRenderer>().material = defaultMaterial;
+        }
     }
 }
