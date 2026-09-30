@@ -270,8 +270,30 @@
                 },
                 {
                     "name": "",
+                    "id": "4d82f00a-f7cc-4aec-afa3-a96f4e3f84a9",
+                    "path": "<HID::E502-2>/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Place",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "faa16f42-2b3c-4cb7-99e8-cade7354ecbc",
                     "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ff65caf9-b182-458e-8b30-dac1aec48b9e",
+                    "path": "<HID::E502-2>/button2",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
