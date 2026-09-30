@@ -19,13 +19,13 @@ public class FieldManager : MonoBehaviour
 
     private Vector2Int[] checkDirection = new Vector2Int[4]
     {
-        new Vector2Int(1, 0), // ‰¡•ûŒü
-        new Vector2Int(0, 1), // c•ûŒü
-        new Vector2Int(1, 1), // Î‚ß•ûŒüi‰Eãj
-        new Vector2Int(1, -1) // Î‚ß•ûŒüi‰E‰ºj
+        new Vector2Int(1, 0), // æ¨ªæ–¹å‘
+        new Vector2Int(0, 1), // ç¸¦æ–¹å‘
+        new Vector2Int(1, 1), // æ–œã‚æ–¹å‘ï¼ˆå³ä¸Šï¼‰
+        new Vector2Int(1, -1) // æ–œã‚æ–¹å‘ï¼ˆå³ä¸‹ï¼‰
     };
 
-    // ‚T–Ú¶Œã”»’è—p‚Ì”z—ñAƒQ[ƒ€’†‚Ì”Õ–ÊƒAƒNƒZƒX—p
+    // ï¼•ç›®ç”Ÿå¾Œåˆ¤å®šç”¨ã®é…åˆ—ã€ã‚²ãƒ¼ãƒ ä¸­ã®ç›¤é¢ã‚¢ã‚¯ã‚»ã‚¹ç”¨
     private FieldTile[,] FieldTileArray;
 
     private void Awake()
@@ -51,7 +51,7 @@ public class FieldManager : MonoBehaviour
     { 
         if(!IsInsideField(coodinate))
         {
-            Debug.LogError($"[FieldManager] RegisterFieldTile: ”ÍˆÍŠO‚Ìw’è‚Å‚· Coodinate:{coodinate} / FieldSize:{fieldSize}");
+            Debug.LogError($"[FieldManager] RegisterFieldTile: ç¯„å›²å¤–ã®æŒ‡å®šã§ã™ Coodinate:{coodinate} / FieldSize:{fieldSize}");
             return;
         }
         FieldTile.Add(piece);
@@ -63,7 +63,7 @@ public class FieldManager : MonoBehaviour
     {
         if(!IsInsideField(coodinate))
         {
-            Debug.LogError($"[FieldManager] GetFieldTile: ”ÍˆÍŠO‚Ìw’è‚Å‚· Coodinate:{coodinate} / FieldSize:{fieldSize}");
+            Debug.LogError($"[FieldManager] GetFieldTile: ç¯„å›²å¤–ã®æŒ‡å®šã§ã™ Coodinate:{coodinate} / FieldSize:{fieldSize}");
             return null;
         }
 
@@ -82,14 +82,14 @@ public class FieldManager : MonoBehaviour
 
         if (!IsInsideField(currentCoodinate))
         {
-            Debug.LogError($"[FieldManager] CheckMatch: ”ÍˆÍŠO‚Ìw’è‚Å‚· Coodinate:{currentCoodinate} / FieldSize:{fieldSize}");
+            Debug.LogError($"[FieldManager] CheckMatch: ç¯„å›²å¤–ã®æŒ‡å®šã§ã™ Coodinate:{currentCoodinate} / FieldSize:{fieldSize}");
             return ret;
         }
 
         FieldTile currentTile = GetFieldTile(currentCoodinate);
         if(currentTile == null)
         {
-            Debug.LogError($"[FieldManager] CheckMatch: w’èÀ•W‚ÉFieldTile‚ª‘¶İ‚µ‚Ü‚¹‚ñ Coodinate:{currentCoodinate}");
+            Debug.LogError($"[FieldManager] CheckMatch: æŒ‡å®šåº§æ¨™ã«FieldTileãŒå­˜åœ¨ã—ã¾ã›ã‚“ Coodinate:{currentCoodinate}");
             return ret;
         }
 
@@ -97,7 +97,7 @@ public class FieldManager : MonoBehaviour
         
         if(currentStone == null)
         {
-            Debug.LogError($"[FieldManager] CheckMatch: w’èÀ•W‚ÉÎ‚ª‘¶İ‚µ‚Ü‚¹‚ñ Coodinate:{currentCoodinate}");
+            Debug.LogError($"[FieldManager] CheckMatch: æŒ‡å®šåº§æ¨™ã«çŸ³ãŒå­˜åœ¨ã—ã¾ã›ã‚“ Coodinate:{currentCoodinate}");
             return ret;
         }
 
@@ -105,28 +105,28 @@ public class FieldManager : MonoBehaviour
         {
             int LineCount = 1;
 
-            // ³•ûŒü‚Æ‹t•ûŒü‚Ì—¼•û‚ğƒ`ƒFƒbƒN
+            // æ­£æ–¹å‘ã¨é€†æ–¹å‘ã®ä¸¡æ–¹ã‚’ãƒã‚§ãƒƒã‚¯
             LineCount += CountMatchingStones(currentCoodinate, num, currentStone);
             LineCount += CountMatchingStones(currentCoodinate, -num, currentStone);
 
             if(num == new Vector2Int(1, 0))
             {
-                // ‰¡•ûŒü‚Ìƒ‰ƒCƒ“”‚ğŠi”[
+                // æ¨ªæ–¹å‘ã®ãƒ©ã‚¤ãƒ³æ•°ã‚’æ ¼ç´
                 ret.lineDir_x1_y0 = LineCount;
             }
             else if(num == new Vector2Int(0, 1))
             {
-                // c•ûŒü‚Ìƒ‰ƒCƒ“”‚ğŠi”[
+                // ç¸¦æ–¹å‘ã®ãƒ©ã‚¤ãƒ³æ•°ã‚’æ ¼ç´
                 ret.lineDir_x0_y1 = LineCount;
             }
             else if(num == new Vector2Int(1, 1))
             {
-                // Î‚ß•ûŒüi‰Eãj‚Ìƒ‰ƒCƒ“”‚ğŠi”[
+                // æ–œã‚æ–¹å‘ï¼ˆå³ä¸Šï¼‰ã®ãƒ©ã‚¤ãƒ³æ•°ã‚’æ ¼ç´
                 ret.lineDir_x1_y1 = LineCount;
             }
             else if(num == new Vector2Int(1, -1))
             {
-                // Î‚ß•ûŒüi‰E‰ºj‚Ìƒ‰ƒCƒ“”‚ğŠi”[
+                // æ–œã‚æ–¹å‘ï¼ˆå³ä¸‹ï¼‰ã®ãƒ©ã‚¤ãƒ³æ•°ã‚’æ ¼ç´
                 ret.lineDir_x1_yn1 = LineCount;
             }
         }
@@ -160,11 +160,14 @@ public class FieldManager : MonoBehaviour
         return new Vector3((fieldSize.x - 1) * 0.5f, 0.0f, (fieldSize.y - 1) * 0.5f);
     }
 
-    public void PopAllColor()
+    public void HighlightAllStoneColor()
     {
         foreach (FieldTile tile in FieldTile)
         {
-            tile.ShowColor();
+            if (tile.PutedStone != null)
+            {
+                tile.PutedStone.RevealColor(tile.PutedStone.Owner.GetComponent<PlayerStoneColor>().StoneColor);
+            }
         }
     }
 }

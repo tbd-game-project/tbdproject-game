@@ -18,6 +18,12 @@ public class Player : MonoBehaviour
 
     //---------------------------------------------------------------
 
+    private bool canPlaceStone = true;
+    public void SetCanPlaceStone(bool value)
+    {
+        canPlaceStone = value;
+    }
+
     private PlayerState currentState;
     public FieldTile OnStandingPiece { get; private set; }
 
@@ -75,6 +81,8 @@ public class Player : MonoBehaviour
 
         // ステータスのコピーインスタンスを生成
         stateList.CreateRunTimeCopies();
+
+        canPlaceStone = true;
     }
 
     void Start()
@@ -156,7 +164,7 @@ public class Player : MonoBehaviour
         }
 
         // どの状態からでも特定のイベントで遷移するトランジションはここに記述する
-        if (input.Place.Pressed && TurnManager.Instance.IsAttackPlayer(this)) 
+        if (input.Place.Pressed && TurnManager.Instance.IsAttackPlayer(this) && canPlaceStone) 
         {
             ChangeState("place");
         }
