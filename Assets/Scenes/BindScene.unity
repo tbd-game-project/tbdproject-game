@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe6d8d14d0a85c49b4a7b77b669128c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartGameButton
-  nextSceneName: DevelopScene
+  nextSceneName: DefaultScene
   transitionSettings: {fileID: 11400000, guid: 93d8b4863f0d0d74da083a36fce197b5, type: 2}
   proceedAction: {fileID: -352290054926589861, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   clearRegistrationAction: {fileID: -471503391394283477, guid: 052faaac586de48259a63d0c4782560b, type: 3}
@@ -257,7 +257,7 @@ Canvas:
   m_GameObject: {fileID: 47280177}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
