@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerInputReader input;
     [SerializeField] private PlayerStateList stateList;
     [SerializeField] private string initializeStatekey = "idle";
+    [SerializeField] private LayerMask fieldLayer; // フィールドのレイヤーマスク
 
     //---------------------------------------------------------------
     [Header("Reposition Visual")]
@@ -107,6 +108,14 @@ public class Player : MonoBehaviour
         currentState?.FixedUpdateState();
     }
 
+    private void LateUpdate()
+    {
+        if(TryGetFieldTileBelow(-0.5f, 1.0f, fieldLayer))
+        {
+            OnStandingPiece.LightUpTile();
+        }
+    }
+
     void OnDestroy()
     {
         stateList.DestroyRunTimeCopies();
@@ -172,15 +181,21 @@ public class Player : MonoBehaviour
             FieldTile = hit.collider.GetComponent<FieldTile>();
             if(FieldTile != null)
             {
+                OnStandingPiece?.ResetTileColor();
                 OnStandingPiece = FieldTile;
+                OnStandingPiece.LightUpTile();
 
                 Debug.DrawLine(origin, hit.point, Color.red, 1f);
                 return true;
             }
         }
 
-        OnStandingPiece = null;
 
+        if (OnStandingPiece != null)
+        {
+            OnStandingPiece.ResetTileColor();
+            OnStandingPiece = null;
+        }
         Debug.DrawLine(origin, origin + Vector3.down * rayDistance, Color.green, 1f);
         return false;
     }

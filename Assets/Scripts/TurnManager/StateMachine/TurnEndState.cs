@@ -27,7 +27,7 @@ public class TurnEndState : TurnBaseState
                 case 5:
                     // 5ライン
                     Debug.Log($"5ラインを検知(所有者:{matchData.Owner}): 起点位置:{matchData.Coordinate} / ライン方向{matchData.Direction}]");
-                    SceneManager.LoadScene("ResultScene");
+                    manager.ChangeState(TurnStateType.Result);
                     break;
 
                 case 4:

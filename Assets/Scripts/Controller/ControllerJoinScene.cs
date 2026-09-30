@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 // コントローラー登録画面の進行を管理する。
 // 登録人数の確認、登録解除、シーン遷移を担当する。
@@ -14,24 +13,31 @@ public sealed class ControllerJoinScene : MonoBehaviour
     private string nextSceneName = "DevelopScene";
 
     [SerializeField]
+    private TransitionSettings transitionSettings;
+
+    [SerializeField]
     private InputActionReference proceedAction;
 
     [SerializeField]
     private InputActionReference clearRegistrationAction;
 
-    // 同一フレームで複数回シーン遷移することを防ぐ
-    private bool isLoadingScene;
-
     private void OnEnable()
     {
+        ControllerSessionManager session = ControllerSessionManager.Instance;
+
+        if (session != null)
+            session.ClearRegistration();
+
         if (proceedAction != null)
         {
             proceedAction.action.performed += OnProceedPerformed;
+            proceedAction.action.Enable();
         }
 
         if (clearRegistrationAction != null)
         {
             clearRegistrationAction.action.performed += OnClearRegistrationPerformed;
+            clearRegistrationAction.action.Enable();
         }
     }
 
@@ -51,13 +57,7 @@ public sealed class ControllerJoinScene : MonoBehaviour
     // 条件を満たしていれば次のシーンへ遷移する
     public void LoadNextScene()
     {
-        // InputActionとUI Buttonの両方から呼ばれても
-        // 一度しか遷移しないようにする
-        if (isLoadingScene)
-            return;
-
-        ControllerSessionManager session =
-            ControllerSessionManager.Instance;
+        ControllerSessionManager session = ControllerSessionManager.Instance;
 
         if (session == null)
         {
@@ -94,28 +94,17 @@ public sealed class ControllerJoinScene : MonoBehaviour
             return;
         }
 
-        isLoadingScene = true;
-
-        // シーン遷移中に入力を受け付けないようにする
-        proceedAction.action.Disable();
-        clearRegistrationAction.action.Disable();
-
-        SceneManager.LoadScene(nextSceneName);
+        SceneTransitionManager.Instance.LoadScene(nextSceneName, transitionSettings);
     }
 
     // 登録済みデバイスをすべて解除する
     public void ClearRegistration()
     {
-        ControllerSessionManager session =
-            ControllerSessionManager.Instance;
+        ControllerSessionManager session = ControllerSessionManager.Instance;
 
         if (session == null)
         {
-            Debug.LogError(
-                "[JoinSceneController] " +
-                "ControllerSessionManagerが存在しません。",
-                this
-            );
+            Debug.LogError("[JoinSceneController] " + "ControllerSessionManagerが存在しません。", this);
 
             return;
         }

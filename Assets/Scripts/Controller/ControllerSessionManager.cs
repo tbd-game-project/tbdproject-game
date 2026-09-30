@@ -44,9 +44,7 @@ public sealed class ControllerSessionManager : MonoBehaviour
     private void OnDestroy()
     {
         if (Instance == this)
-        {
             Instance = null;
-        }
     }
 
     // 入力デバイスを次の空きプレイヤーへ登録する。

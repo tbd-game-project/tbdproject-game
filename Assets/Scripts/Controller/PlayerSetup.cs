@@ -16,7 +16,7 @@ public sealed class PlayerSetup : MonoBehaviour
     private string joystickControlSchemeName    = "Joystick";
 
     [SerializeField]
-    private string keyboardControlSchemeName    = "Keyboard";
+    private string keyboardControlSchemeName    = "Keyboard&Mouse";
 
     [SerializeField]
     private PlayerInput[] players = new PlayerInput[ControllerSessionManager.MaxPlayerCount];
