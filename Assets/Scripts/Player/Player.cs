@@ -8,6 +8,10 @@ public class Player : MonoBehaviour
     [SerializeField] private string initializeStatekey = "idle";
     [SerializeField] private LayerMask fieldLayer; // フィールドのレイヤーマスク
 
+    [Header("Player TeamColor")]
+    [SerializeField] private Color teamColor = Color.red;
+    public Color TeamColor => teamColor;
+
     //---------------------------------------------------------------
     [Header("Reposition Visual")]
     private GameObject normalMesh;

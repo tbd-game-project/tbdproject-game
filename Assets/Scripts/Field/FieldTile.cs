@@ -66,7 +66,7 @@ public class FieldTile : MonoBehaviour
     {
         if(PutedStone != null)
         {
-            PutedStone.RevealColor(PutedStone.Owner.GetComponent<PlayerStoneColor>().StoneColor);
+            PutedStone.RevealColor(PutedStone.Owner.TeamColor);
         }
     }
 
