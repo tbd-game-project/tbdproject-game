@@ -159,4 +159,12 @@ public class FieldManager : MonoBehaviour
     {
         return new Vector3((fieldSize.x - 1) * 0.5f, 0.0f, (fieldSize.y - 1) * 0.5f);
     }
+
+    public void PopAllColor()
+    {
+        foreach (FieldTile tile in FieldTile)
+        {
+            tile.ShowColor();
+        }
+    }
 }
