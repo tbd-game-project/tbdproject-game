@@ -166,7 +166,7 @@ public class FieldManager : MonoBehaviour
         {
             if (tile.PutedStone != null)
             {
-                tile.PutedStone.RevealColor(tile.PutedStone.Owner.GetComponent<PlayerStoneColor>().StoneColor);
+                tile.PutedStone.RevealColor(tile.PutedStone.Owner.TeamColor);
             }
         }
     }

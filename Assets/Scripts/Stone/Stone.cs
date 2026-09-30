@@ -124,16 +124,7 @@ public class Stone : MonoBehaviour
             return;
         }
 
-        if (!Owner.TryGetComponent<PlayerStoneColor>(
-                out var playerStoneColor))
-        {
-            Debug.LogWarning(
-                "持ち主のPlayerにPlayerStoneColorがないため、共通色で表示します。",
-                this);
-            return;
-        }
-
-        RevealColor(playerStoneColor.StoneColor);
+        RevealColor(Owner.TeamColor);
     }
 
     /// <summary>
