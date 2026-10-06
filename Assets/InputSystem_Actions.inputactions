@@ -216,7 +216,18 @@
                 {
                     "name": "",
                     "id": "bb1a9f0e-4052-4895-8743-7fa3700387e2",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71dd0b93-a270-4554-9375-cc04f206a57b",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -270,8 +281,30 @@
                 },
                 {
                     "name": "",
+                    "id": "4d82f00a-f7cc-4aec-afa3-a96f4e3f84a9",
+                    "path": "<HID::E502-2>/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Place",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "faa16f42-2b3c-4cb7-99e8-cade7354ecbc",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ff65caf9-b182-458e-8b30-dac1aec48b9e",
+                    "path": "<HID::E502-2>/button2",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

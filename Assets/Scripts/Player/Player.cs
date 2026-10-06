@@ -6,6 +6,11 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerInputReader input;
     [SerializeField] private PlayerStateList stateList;
     [SerializeField] private string initializeStatekey = "idle";
+    [SerializeField] private LayerMask fieldLayer; // フィールドのレイヤーマスク
+
+    [Header("Player TeamColor")]
+    [SerializeField] private Color teamColor = Color.red;
+    public Color TeamColor => teamColor;
 
     //---------------------------------------------------------------
     [Header("Reposition Visual")]
@@ -16,6 +21,12 @@ public class Player : MonoBehaviour
     private Renderer repositionMeshRenderer;
 
     //---------------------------------------------------------------
+
+    private bool canPlaceStone = true;
+    public void SetCanPlaceStone(bool value)
+    {
+        canPlaceStone = value;
+    }
 
     private PlayerState currentState;
     public FieldTile OnStandingPiece { get; private set; }
@@ -74,6 +85,8 @@ public class Player : MonoBehaviour
 
         // ステータスのコピーインスタンスを生成
         stateList.CreateRunTimeCopies();
+
+        canPlaceStone = true;
     }
 
     void Start()
@@ -97,6 +110,14 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         currentState?.FixedUpdateState();
+    }
+
+    private void LateUpdate()
+    {
+        if(TryGetFieldTileBelow(-0.5f, 1.0f, fieldLayer))
+        {
+            OnStandingPiece.LightUpTile();
+        }
     }
 
     void OnDestroy()
@@ -147,7 +168,7 @@ public class Player : MonoBehaviour
         }
 
         // どの状態からでも特定のイベントで遷移するトランジションはここに記述する
-        if (input.Place.Pressed && TurnManager.Instance.IsAttackPlayer(this)) 
+        if (input.Place.Pressed && TurnManager.Instance.IsAttackPlayer(this) && canPlaceStone) 
         {
             ChangeState("place");
         }
@@ -164,15 +185,21 @@ public class Player : MonoBehaviour
             FieldTile = hit.collider.GetComponent<FieldTile>();
             if(FieldTile != null)
             {
+                OnStandingPiece?.ResetTileColor();
                 OnStandingPiece = FieldTile;
+                OnStandingPiece.LightUpTile();
 
                 Debug.DrawLine(origin, hit.point, Color.red, 1f);
                 return true;
             }
         }
 
-        OnStandingPiece = null;
 
+        if (OnStandingPiece != null)
+        {
+            OnStandingPiece.ResetTileColor();
+            OnStandingPiece = null;
+        }
         Debug.DrawLine(origin, origin + Vector3.down * rayDistance, Color.green, 1f);
         return false;
     }
