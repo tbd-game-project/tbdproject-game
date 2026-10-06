@@ -396,6 +396,8 @@ public class TurnManager : MonoBehaviour
         {
             turnTimer = 0.0f;
         }
+
+        TurnUI.Instance.SetTimeText(((int)turnTimer).ToString());
     }
 
     // Attack‘¤Player‚ªs“®‚ğŠ®—¹‚µ‚½‚ÉŒÄ‚Ô
