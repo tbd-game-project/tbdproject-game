@@ -140,7 +140,7 @@ public class TurnManager : MonoBehaviour
         {
             player1 = player;
 
-            player1.SetRepositionColor(Color.red);
+            player1.SetRepositionColor(player1.TeamColor);
 
             CheckBattleReady();
 
@@ -152,7 +152,7 @@ public class TurnManager : MonoBehaviour
         {
             player2 = player;
 
-            player2.SetRepositionColor(Color.blue);
+            player2.SetRepositionColor(player2.TeamColor);
 
             CheckBattleReady();
 
@@ -396,6 +396,8 @@ public class TurnManager : MonoBehaviour
         {
             turnTimer = 0.0f;
         }
+
+        TurnUI.Instance.SetTimeText(((int)turnTimer).ToString());
     }
 
     // Attack‘¤Player‚ªs“®‚ğŠ®—¹‚µ‚½‚ÉŒÄ‚Ô
