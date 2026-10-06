@@ -6,8 +6,30 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerInputReader input;
     [SerializeField] private PlayerStateList stateList;
     [SerializeField] private string initializeStatekey = "idle";
+    [SerializeField] private LayerMask fieldLayer; // フィールドのレイヤーマスク
+
+    [Header("Player TeamColor")]
+    [SerializeField] private Color teamColor = Color.red;
+    public Color TeamColor => teamColor;
+
+    //---------------------------------------------------------------
+    [Header("Reposition Visual")]
+    private GameObject normalMesh;
+    private GameObject repositionMesh;
+
+    private Renderer normalMeshRenderer;
+    private Renderer repositionMeshRenderer;
+
+    //---------------------------------------------------------------
+
+    private bool canPlaceStone = true;
+    public void SetCanPlaceStone(bool value)
+    {
+        canPlaceStone = value;
+    }
 
     private PlayerState currentState;
+    public FieldTile OnStandingPiece { get; private set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -22,12 +44,58 @@ public class Player : MonoBehaviour
             }
         }
 
+        //---------------------------------------------------------------
+        // NormalMeshを取得
+        Transform normalMeshTransform = transform.Find("NormalMesh");
+
+        if (normalMeshTransform != null)
+        {
+            normalMesh = normalMeshTransform.gameObject;
+        }
+        else
+        {
+            Debug.LogError("NormalMesh is not found");
+            return;
+        }
+
+        // RepositionPointerを取得
+        Transform repositionMeshTransform = transform.Find("RepositionMesh");
+
+        if (repositionMeshTransform != null)
+        {
+            repositionMesh = repositionMeshTransform.gameObject;
+        }
+        else
+        {
+            Debug.LogError("RepositionPointer is not found");
+            return;
+        }
+
+        normalMeshRenderer = normalMesh.GetComponent<Renderer>();
+
+        repositionMeshRenderer = repositionMesh.GetComponent<Renderer>();
+
+        if (!normalMeshRenderer || !repositionMeshRenderer)
+        {
+            Debug.LogError("NormalMesh または RepositionMesh にRendererがありません。");
+
+            return;
+        }
+        //---------------------------------------------------------------
+
         // ステータスのコピーインスタンスを生成
         stateList.CreateRunTimeCopies();
+
+        canPlaceStone = true;
     }
 
     void Start()
     {
+        //---------------------------------------------------------------
+        TurnManager.Instance.RegisterPlayer(this);
+        repositionMesh.SetActive(false);
+        //---------------------------------------------------------------
+
         ChangeState(initializeStatekey);
     }
 
@@ -42,6 +110,14 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         currentState?.FixedUpdateState();
+    }
+
+    private void LateUpdate()
+    {
+        if(TryGetFieldTileBelow(-0.5f, 1.0f, fieldLayer))
+        {
+            OnStandingPiece.LightUpTile();
+        }
     }
 
     void OnDestroy()
@@ -67,7 +143,96 @@ public class Player : MonoBehaviour
 
     private void AnyStateTransition()
     {
-        // どの状態からでも特定のイベントで遷移するトランジションはここに記述する
+        // 命中情報が届いていたら、操作より優先して吹き飛ばされる状態へ入る。
+        if (TryGetComponent<SmashHitReceiver>(out var receiver) &&
+            receiver.HasPendingHit)
+        {
+            ChangeState("knockback");
+            return;
+        }
 
+        // 吹き飛ばされている間は、攻撃・配置入力を使わない。
+        if (currentState is PlayerStateSmashed)
+        {
+            return;
+        }
+
+        if (input.Attack.Pressed &&
+            TryGetComponent<SmashAttack>(out var skill))
+        {
+            // 攻撃が発動した場合は、同時に配置しない。
+            if (skill.TryUse())
+            {
+                return;
+            }
+        }
+
+        // どの状態からでも特定のイベントで遷移するトランジションはここに記述する
+        if (input.Place.Pressed && TurnManager.Instance.IsAttackPlayer(this) && canPlaceStone) 
+        {
+            ChangeState("place");
+        }
     }
+
+    public bool TryGetFieldTileBelow(float rayStartHeight, float rayDistance, LayerMask fieldLayer)
+    {
+        Vector3 origin = transform.position + Vector3.up * rayStartHeight;
+
+        FieldTile FieldTile= null;
+
+        if (Physics.Raycast(origin,Vector3.down,out RaycastHit hit, rayDistance, fieldLayer,QueryTriggerInteraction.Ignore))
+        {
+            FieldTile = hit.collider.GetComponent<FieldTile>();
+            if(FieldTile != null)
+            {
+                OnStandingPiece?.ResetTileColor();
+                OnStandingPiece = FieldTile;
+                OnStandingPiece.LightUpTile();
+
+                Debug.DrawLine(origin, hit.point, Color.red, 1f);
+                return true;
+            }
+        }
+
+
+        if (OnStandingPiece != null)
+        {
+            OnStandingPiece.ResetTileColor();
+            OnStandingPiece = null;
+        }
+        Debug.DrawLine(origin, origin + Vector3.down * rayDistance, Color.green, 1f);
+        return false;
+    }
+
+
+    //---------------------------------------------------------------
+    public void StartReposition()
+    {
+        ChangeState("reposition");
+    }
+
+    public void EndReposition()
+    {
+        ChangeState("idle");
+    }
+
+    public void EnterRepositionVisual()
+    {
+        normalMesh.SetActive(false);
+        repositionMesh.SetActive(true);
+    }
+
+    public void ExitRepositionVisual()
+    {
+        repositionMesh.SetActive(false);
+        normalMesh.SetActive(true);
+    }
+
+    public void SetRepositionColor(Color color)
+    {
+        normalMeshRenderer.material.color = color;
+        repositionMeshRenderer.material.color = color;
+    }
+
+    //---------------------------------------------------------------
 }
