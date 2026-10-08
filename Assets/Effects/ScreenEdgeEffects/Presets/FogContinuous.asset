@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db252b3ba78f29f4281bc755ac07cc88, type: 3}
-  m_Name: FogOneShot
+  m_Name: FogContinuous
   m_EditorClassIdentifier: Assembly-CSharp::ScreenEffectPreset
   effectMaterial: {fileID: 2100000, guid: 0b21cc9a99f81f442b4bf83400b8b134, type: 2}
   intensityProperty: _Intensity
   maxIntensity: 0.6
-  playbackMode: 0
-  duration: 3
+  playbackMode: 1
+  duration: 1
   intensityCurve:
     serializedVersion: 2
     m_Curve:
@@ -50,7 +50,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  fadeInDuration: 0.1
+  fadeInDuration: 1
   fadeInCurve:
     serializedVersion: 2
     m_Curve:
@@ -75,7 +75,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  fadeOutDuration: 0.1
+  fadeOutDuration: 1
   fadeOutCurve:
     serializedVersion: 2
     m_Curve:

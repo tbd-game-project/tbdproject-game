@@ -3,112 +3,71 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 /// <summary>
-/// 画面周辺エフェクトの表示と見た目を管理する。
-///
-/// 使用方法：
-/// ・空のGameObjectに、このコンポーネントを追加する。
-/// ・Renderer Dataに、エフェクトを設定したRendererを指定する。
-/// ・Feature Nameに、対象のFull Screen PassのNameを指定する。
-///
-/// 注意：
-/// 同じRenderer Featureを操作するControllerは1つだけにする。
-/// 同じRendererを複数のCameraが使う場合、そのCamera全体に影響する。
-/// 
+/// 演出設定を読み込み、共通画面のエフェクトを再生する。
+/// 同じRenderer Featureを操作するControllerは1つにする。
 /// </summary>
 [DisallowMultipleComponent]
 public class ScreenEdgeEffectController : MonoBehaviour
 {
-    [Header("描画先の設定")]
+    [Header("描画先")]
 
-    [Tooltip("対象のFull Screen Passが登録されているRenderer Data。")]
+    [Tooltip("対象のFull Screen Passが登録されているRenderer。")]
     [SerializeField]
     private UniversalRendererData rendererData;
 
-    [Tooltip("Full Screen Pass Renderer FeatureのNameと同じ文字列にする。")]
+    [Tooltip("操作するFull Screen PassのName。")]
     [SerializeField]
     private string featureName = "ScreenEdgeFog";
 
-    [Header("表示の設定")]
+    [Header("開始時の再生")]
 
-    [Tooltip("オンで表示、オフで非表示。実行中にも変更できる。")]
+    [Tooltip("有効になったときに再生する演出。未設定なら再生しない。")]
     [SerializeField]
-    private bool effectEnabled = true;
+    private ScreenEffectPreset initialPreset;
 
-    [Tooltip("エフェクトの色。Alphaを小さくすると薄くなる。")]
-    [SerializeField]
-    private Color effectColor = new Color(0.65f, 0.7f, 0.8f, 1f);
+    // 再生状態を区別する。
+    private enum PlaybackState
+    {
+        Idle,
+        OneShot,
+        FadeIn,
+        Holding,
+        FadeOut
+    }
 
-    [Tooltip("エフェクトの濃さ。0で見えなくなり、1で最も濃くなる。")]
-    [SerializeField, Range(0f, 1f)]
-    private float intensity = 0.6f;
+    private PlaybackState state = PlaybackState.Idle;
 
-    [Tooltip("画面端からの広がり。大きくすると中央側まで広がる。")]
-    [SerializeField, Range(0f, 0.5f)]
-    private float edgeWidth = 0.2f;
-
-    [Tooltip("エフェクトの境界の柔らかさ。大きいほど滑らかになる。")]
-    [SerializeField, Range(0.01f, 1f)]
-    private float softness = 0.8f;
-
-    [Header("模様の設定")]
-
-    [Tooltip("模様の細かさ。大きくすると細かい模様になる。")]
-    [SerializeField, Range(1f, 30f)]
-    private float noiseScale = 8f;
-
-    [Tooltip("模様による濃淡の強さ。0にすると模様がなくなる。")]
-    [SerializeField, Range(0f, 1f)]
-    private float noiseStrength = 0.7f;
-
-    // 操作対象の描画機能と、実行中専用のMaterial。
     private FullScreenPassRendererFeature targetFeature;
-    private Material runtimeMaterial;
-
-    // 終了時に元の状態へ戻すため、開始前の設定を保存する。
     private Material originalMaterial;
     private bool originalActive;
 
-    // Shader内のプロパティ名をIDに変換しておく。
-    // Shader側の名前を変更した場合は、こちらも合わせて変更する。
-    private static readonly int effectEnabledId =
-        Shader.PropertyToID("_EffectEnabled");
+    private Material runtimeMaterial;
+    private ScreenEffectPreset currentPreset;
+    private int intensityId;
 
-    private static readonly int fogColorId =
-        Shader.PropertyToID("_FogColor");
+    private float elapsed;
+    private float currentIntensity;
+    private float fadeOutStartIntensity;
 
-    private static readonly int intensityId =
-        Shader.PropertyToID("_Intensity");
-
-    private static readonly int edgeWidthId =
-        Shader.PropertyToID("_EdgeWidth");
-
-    private static readonly int softnessId =
-        Shader.PropertyToID("_Softness");
-
-    private static readonly int noiseScaleId =
-        Shader.PropertyToID("_NoiseScale");
-
-    private static readonly int noiseStrengthId =
-        Shader.PropertyToID("_NoiseStrength");
+    // 再生番号。古い停止指示で新しい演出を消さないために使う。
+    // 0は「有効な再生がない」ことを表す。
+    private long nextPlaybackId;
+    private long currentPlaybackId;
 
     private void OnEnable()
     {
-        // Rendererが未設定の場合は、原因をConsoleに表示する。
         if (rendererData == null)
         {
-            Debug.LogError(
-                "ScreenEdgeEffectController: Renderer Dataを設定してください。",
-                this);
+            Debug.LogError("Renderer Dataを設定してください。", this);
             return;
         }
 
-        // Rendererに登録されたFeatureから、指定した名前のものを探す。
         foreach (var feature in rendererData.rendererFeatures)
         {
-            if (feature is FullScreenPassRendererFeature fullScreenFeature
+            if (feature is FullScreenPassRendererFeature fullScreen
                 && feature.name == featureName)
             {
-                targetFeature = fullScreenFeature;
+                targetFeature = fullScreen;
                 break;
             }
         }
@@ -116,134 +75,265 @@ public class ScreenEdgeEffectController : MonoBehaviour
         if (targetFeature == null)
         {
             Debug.LogError(
-                $"ScreenEdgeEffectController: 「{featureName}」という名前の"
-                + "Full Screen Passが見つかりません。",
+                $"Full Screen Pass「{featureName}」が見つかりません。",
                 this);
-            return;
-        }
-
-        if (targetFeature.passMaterial == null)
-        {
-            Debug.LogError(
-                "ScreenEdgeEffectController: Full Screen Passの"
-                + "Pass Materialを設定してください。",
-                this);
-            targetFeature = null;
             return;
         }
 
         originalMaterial = targetFeature.passMaterial;
         originalActive = targetFeature.isActive;
 
-        // 元のMaterialを直接変更せず、実行中専用のコピーを作る。
-        runtimeMaterial = new Material(originalMaterial);
-        runtimeMaterial.name = originalMaterial.name + " (Runtime)";
+        // 再生指示がない間は描画しない。
+        targetFeature.SetActive(false);
+
+        if (initialPreset != null)
+        {
+            Play(initialPreset);
+        }
+    }
+
+    /// <summary>
+    /// 演出を再生し、停止に使用する再生番号を返す。
+    /// 失敗した場合は0を返す。
+    /// </summary>
+    public long Play(ScreenEffectPreset preset)
+    {
+        if (!isActiveAndEnabled || targetFeature == null)
+        {
+            Debug.LogWarning(
+                "有効なControllerと描画先が必要です。", this);
+            return 0;
+        }
+
+        if (preset == null || preset.EffectMaterial == null)
+        {
+            Debug.LogError(
+                "演出設定とEffect Materialを設定してください。",
+                this);
+            return 0;
+        }
+
+        if (string.IsNullOrWhiteSpace(preset.IntensityProperty)
+            || !preset.EffectMaterial.HasProperty(
+                preset.IntensityProperty))
+        {
+            Debug.LogError(
+                "Intensity PropertyがMaterialに存在しません。",
+                this);
+            return 0;
+        }
+
+        // 同じ継続演出の再呼び出しでは、表示を維持する。
+        // 停止フェード中なら、新たに再生し直す。
+        if (currentPreset == preset
+            && preset.Mode == ScreenEffectPreset.PlaybackMode.Continuous
+            && (state == PlaybackState.FadeIn
+                || state == PlaybackState.Holding))
+        {
+            return currentPlaybackId;
+        }
+
+        // 設定の確認が済んでから、古い演出を置き換える。
+        FinishPlayback();
+
+        currentPreset = preset;
+        intensityId = Shader.PropertyToID(
+            preset.IntensityProperty);
+
+        // 演出元のMaterialは変更せず、実行用コピーを使う。
+        runtimeMaterial = new Material(preset.EffectMaterial);
+        runtimeMaterial.name =
+            preset.EffectMaterial.name + " (Runtime)";
         runtimeMaterial.hideFlags = HideFlags.HideAndDontSave;
 
         targetFeature.passMaterial = runtimeMaterial;
 
-        ApplySettings();
-    }
+        currentPlaybackId = ++nextPlaybackId;
+        elapsed = 0f;
 
-    private void Update()
-    {
-        // 実行中にInspectorで変更した値も、画面へ反映する。
-        ApplySettings();
+        if (preset.Mode == ScreenEffectPreset.PlaybackMode.OneShot)
+        {
+            state = PlaybackState.OneShot;
+            ApplyIntensity(
+                preset.MaxIntensity * preset.EvaluateIntensity(0f));
+        }
+        else if (preset.FadeInDuration > 0f)
+        {
+            state = PlaybackState.FadeIn;
+            ApplyIntensity(
+                preset.MaxIntensity * preset.EvaluateFadeIn(0f));
+        }
+        else
+        {
+            state = PlaybackState.Holding;
+            ApplyIntensity(preset.MaxIntensity);
+        }
+
+        targetFeature.SetActive(true);
+        return currentPlaybackId;
     }
 
     /// <summary>
-    /// Inspectorの設定を、描画機能とMaterialへ反映する。
+    /// 指定した再生番号の演出を停止する。
+    /// 古い番号や0を渡しても、現在の演出には影響しない。
     /// </summary>
-    private void ApplySettings()
+    public void Stop(long playbackId)
     {
-        // 初期設定に失敗した場合などは、処理を行わない。
-        if (targetFeature == null || runtimeMaterial == null)
+        if (playbackId == 0
+            || playbackId != currentPlaybackId
+            || state == PlaybackState.Idle
+            || state == PlaybackState.FadeOut)
         {
             return;
         }
 
-        // 非表示のときは、エフェクトの描画処理自体を停止する。
-        if (targetFeature.isActive != effectEnabled)
+        if (currentPreset.FadeOutDuration <= 0f)
         {
-            targetFeature.SetActive(effectEnabled);
+            FinishPlayback();
+            return;
         }
 
-        runtimeMaterial.SetFloat(effectEnabledId, effectEnabled ? 1f : 0f);
-        runtimeMaterial.SetColor(fogColorId, effectColor);
-        runtimeMaterial.SetFloat(intensityId, intensity);
-        runtimeMaterial.SetFloat(edgeWidthId, edgeWidth);
-        runtimeMaterial.SetFloat(softnessId, softness);
-        runtimeMaterial.SetFloat(noiseScaleId, noiseScale);
-        runtimeMaterial.SetFloat(noiseStrengthId, noiseStrength);
+        // 途中の強さからフェードするので、
+        // 停止指示で急に最大の強さへ跳ね上がらない。
+        fadeOutStartIntensity = currentIntensity;
+        elapsed = 0f;
+        state = PlaybackState.FadeOut;
     }
 
-    /// <summary>
-    /// エフェクトを表示する。
-    /// 他のスクリプトから、controller.Show(); の形で呼び出す。
-    /// </summary>
-    public void Show()
+    private void Update()
     {
-        effectEnabled = true;
-        ApplySettings();
-    }
-
-    /// <summary>
-    /// エフェクトを非表示にする。
-    /// </summary>
-    public void Hide()
-    {
-        effectEnabled = false;
-        ApplySettings();
-    }
-
-    /// <summary>
-    /// 濃さを変更する。指定できる値は0?1。
-    /// 範囲外の値は、自動的に0?1へ収める。
-    /// </summary>
-    public void SetIntensity(float value)
-    {
-        intensity = Mathf.Clamp01(value);
-        ApplySettings();
-    }
-
-    /// <summary>
-    /// エフェクトの色を変更する。
-    /// </summary>
-    public void SetColor(Color value)
-    {
-        effectColor = value;
-        ApplySettings();
-    }
-
-    /// <summary>
-    /// 画面端からの広がりを変更する。指定できる値は0?0.5。
-    /// </summary>
-    public void SetEdgeWidth(float value)
-    {
-        edgeWidth = Mathf.Clamp(value, 0f, 0.5f);
-        ApplySettings();
-    }
-
-    private void OnDisable()
-    {
-        // 自分が設定したMaterialがまだ使われている場合、
-        // 開始前のMaterialと表示状態に戻す。
-        if (targetFeature != null
-            && runtimeMaterial != null
-            && targetFeature.passMaterial == runtimeMaterial)
+        if (state == PlaybackState.Idle)
         {
+            return;
+        }
+
+        // 再生中に設定などが失われた場合は終了する。
+        if (currentPreset == null
+            || runtimeMaterial == null
+            || targetFeature == null)
+        {
+            FinishPlayback();
+            return;
+        }
+
+        // timeScaleが0なら時間も停止する。
+        float delta = Time.deltaTime;
+        if (delta <= 0f)
+        {
+            return;
+        }
+
+        elapsed += delta;
+
+        switch (state)
+        {
+            case PlaybackState.OneShot:
+                {
+                    float duration =
+                        Mathf.Max(0.01f, currentPreset.Duration);
+
+                    if (elapsed >= duration)
+                    {
+                        // 自動終了では追加の停止フェードを行わない。
+                        // 終了までの変化はIntensity Curveで設定する。
+                        FinishPlayback();
+                        return;
+                    }
+
+                    ApplyIntensity(
+                        currentPreset.MaxIntensity
+                        * currentPreset.EvaluateIntensity(
+                            elapsed / duration));
+                    break;
+                }
+
+            case PlaybackState.FadeIn:
+                {
+                    float duration =
+                        Mathf.Max(0f, currentPreset.FadeInDuration);
+
+                    if (duration <= 0f || elapsed >= duration)
+                    {
+                        state = PlaybackState.Holding;
+                        ApplyIntensity(currentPreset.MaxIntensity);
+                    }
+                    else
+                    {
+                        ApplyIntensity(
+                            currentPreset.MaxIntensity
+                            * currentPreset.EvaluateFadeIn(
+                                elapsed / duration));
+                    }
+                    break;
+                }
+
+            case PlaybackState.Holding:
+                ApplyIntensity(currentPreset.MaxIntensity);
+                break;
+
+            case PlaybackState.FadeOut:
+                {
+                    float duration =
+                        Mathf.Max(0f, currentPreset.FadeOutDuration);
+
+                    if (duration <= 0f || elapsed >= duration)
+                    {
+                        FinishPlayback();
+                        return;
+                    }
+
+                    ApplyIntensity(
+                        fadeOutStartIntensity
+                        * currentPreset.EvaluateFadeOut(
+                            elapsed / duration));
+                    break;
+                }
+        }
+    }
+
+    private void ApplyIntensity(float value)
+    {
+        currentIntensity = Mathf.Clamp01(value);
+        runtimeMaterial.SetFloat(intensityId, currentIntensity);
+    }
+
+    /// <summary>
+    /// 表示を止め、実行用Materialを片付ける。
+    /// 別演出への置き換え時にも使用する。
+    /// </summary>
+    private void FinishPlayback()
+    {
+        if (targetFeature != null)
+        {
+            targetFeature.SetActive(false);
             targetFeature.passMaterial = originalMaterial;
-            targetFeature.SetActive(originalActive);
         }
 
-        // 実行中専用に作ったMaterialを片付ける。
         if (runtimeMaterial != null)
         {
             Destroy(runtimeMaterial);
         }
 
         runtimeMaterial = null;
-        originalMaterial = null;
+        currentPreset = null;
+        currentPlaybackId = 0;
+        currentIntensity = 0f;
+        elapsed = 0f;
+        state = PlaybackState.Idle;
+    }
+
+    private void OnDisable()
+    {
+        FinishPlayback();
+
+        // Controllerが無効になったら、開始前の状態に戻す。
+        if (targetFeature != null)
+        {
+            targetFeature.passMaterial = originalMaterial;
+            targetFeature.SetActive(originalActive);
+        }
+
         targetFeature = null;
+        originalMaterial = null;
     }
 }
